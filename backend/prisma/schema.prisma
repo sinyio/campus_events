@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  name       String
+  login      String   @unique
+  password   String
+  role       Role     @default(STUDENT)
+
+  studentId  String?
+
+  registeredEvents EventRegistration[]
+  favoriteEvents   EventFavorite[]
+
+  @@map("users")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  imageUrl    String?
+
+  registrations EventRegistration[]
+  favorites     EventFavorite[]
+
+  @@map("events")
+}
+
+model Category {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  events Event[]
+
+  @@map("categories")
+}
+
+model EventRegistration {
+  userId       String
+  eventId      String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade) 
+  registeredAt DateTime @default(now()) @map("registered_at")
+
+  @@id([userId, eventId]) // Составной первичный ключ
+  @@map("event_registrations")
+}
+
+model EventFavorite {
+  userId  String
+  eventId String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  addedAt DateTime @default(now()) @map("added_at")
+
+  @@id([userId, eventId])
+  @@map("event_favorites")
+}
