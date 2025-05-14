@@ -15,8 +15,10 @@ model User {
   login      String   @unique
   password   String
   role       Role     @default(STUDENT)
-
   studentId  String?
+  email      String?  @unique
+  avatarUrl  String?
+  theme      Theme    @default(LIGHT)
 
   registeredEvents EventRegistration[]
   favoriteEvents   EventFavorite[]
@@ -27,6 +29,11 @@ model User {
 enum Role {
   STUDENT
   ADMIN
+}
+
+enum Theme {
+  LIGHT
+  DARK
 }
 
 model Event {
@@ -41,6 +48,9 @@ model Event {
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  String
   imageUrl    String?
+  status      EventStatus @default(UPCOMING)
+  maxParticipants Int?
+  registrationDeadline DateTime?
 
   registrations EventRegistration[]
   favorites     EventFavorite[]
@@ -48,10 +58,29 @@ model Event {
   @@map("events")
 }
 
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  PAST
+}
+
+enum CategoryType {
+  CONFERENCES
+  EXCURSIONS
+  COMPETITIONS
+  CAREER
+  TRAININGS
+  UNIVERSITY_LIFE
+  SCIENCE
+  SPORTS
+}
+
 model Category {
-  id     String  @id @default(cuid())
-  name   String  @unique
-  events Event[]
+  id       String       @id @default(cuid())
+  name     String       @unique
+  type     CategoryType
+  imageUrl String?     // URL изображения категории
+  events   Event[]
 
   @@map("categories")
 }
@@ -62,9 +91,16 @@ model EventRegistration {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade) 
   registeredAt DateTime @default(now()) @map("registered_at")
+  status       RegistrationStatus @default(REGISTERED)
 
   @@id([userId, eventId]) // Составной первичный ключ
   @@map("event_registrations")
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  CANCELLED
+  ATTENDED
 }
 
 model EventFavorite {

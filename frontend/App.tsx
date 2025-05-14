@@ -1,13 +1,13 @@
-import { ScreenContent } from 'components/ScreenContent';
-import { StatusBar } from 'expo-status-bar';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Layout } from './src/components/Layout';
 
-import './global.css';
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <>
-      <ScreenContent title="Home" path="App.tsx" />
-      <StatusBar style="auto" />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Layout />
+    </QueryClientProvider>
   );
 }
+
