@@ -29,7 +29,8 @@ export class AuthController {
           properties: {
             id: { type: 'string' },
             login: { type: 'string' },
-            name: { type: 'string' }
+            name: { type: 'string' },
+            email: { type: 'string' }
           }
         },
         accessToken: { type: 'string' },
@@ -78,7 +79,8 @@ export class AuthController {
           properties: {
             id: { type: 'string' },
             login: { type: 'string' },
-            name: { type: 'string' }
+            name: { type: 'string' },
+            email: { type: 'string' }
           }
         },
         accessToken: { type: 'string' },

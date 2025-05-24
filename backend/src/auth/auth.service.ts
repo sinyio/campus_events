@@ -55,6 +55,7 @@ export class AuthService {
           id: user.id,
           login: user.login,
           name: user.name,
+          email: user.email,
         },
         ...tokens,
       };
@@ -74,6 +75,7 @@ export class AuthService {
           id: user.id,
           login: user.login,
           name: user.name,
+          email: user.email,
         },
         ...tokens,
       };
@@ -107,6 +109,7 @@ export class AuthService {
           id: user.id,
           login: user.login,
           name: user.name,
+          email: user.email,
         },
         ...tokens,
       };
