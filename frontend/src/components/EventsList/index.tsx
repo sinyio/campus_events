@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useEvents, Event } from '../../hooks/useEvents';
 import { EventCard } from '../EventCard';
@@ -17,6 +17,7 @@ interface EventsListProps {
 
 export const EventsList: React.FC<EventsListProps> = ({ filters, onScroll }) => {
   const { getColor } = useThemeStyles();
+  const [refreshing, setRefreshing] = useState(false);
   const {
     data,
     fetchNextPage,
@@ -28,6 +29,12 @@ export const EventsList: React.FC<EventsListProps> = ({ filters, onScroll }) => 
   } = useEvents(filters);
 
   const styles = createStyles(getColor);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   if (isLoading) {
     return (
@@ -92,6 +99,14 @@ export const EventsList: React.FC<EventsListProps> = ({ filters, onScroll }) => 
         ListFooterComponent={renderFooter}
         removeClippedSubviews={true}
         onScroll={onScroll}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[getColor('primary')]}
+            tintColor={getColor('primary')}
+          />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>Ничего не найдено</Text>

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
+    "name": "Campus Events",
+    "slug": "campus-events",
     "version": "1.0.0",
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +30,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.campusevents.app"
     }
   }
 }
