@@ -1,0 +1,23 @@
+{
+  "name": "campus-events",
+  "version": "1.0.0",
+  "description": "Campus Events Application",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && (if not exist node_modules npm install) && npm run start:dev",
+    "start:frontend": "cd frontend && (if not exist node_modules npm install) && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "db:setup": "cd backend && npx prisma migrate deploy && npx prisma db seed",
+    "db:reset": "cd backend && npx prisma migrate reset --force"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@react-navigation/bottom-tabs": "^7.3.10",
+    "@react-navigation/native": "^7.1.6",
+    "expo-linear-gradient": "^14.1.4",
+    "react-native-safe-area-context": "^5.3.0",
+    "react-native-screens": "^4.10.0"
+  }
+}

@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  name       String
+  login      String   @unique
+  password   String
+  role       Role     @default(STUDENT)
+  studentId  String?
+  email      String?  @unique
+  avatarUrl  String?
+  theme      Theme    @default(LIGHT)
+
+  registeredEvents EventRegistration[]
+  favoriteEvents   EventFavorite[]
+
+  @@map("users")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum Theme {
+  LIGHT
+  DARK
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  status      EventStatus @default(UPCOMING)
+
+  registrations EventRegistration[]
+  favorites     EventFavorite[]
+
+  @@map("events")
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  PAST
+}
+
+enum CategoryType {
+  CONFERENCES
+  EXCURSIONS
+  COMPETITIONS
+  CAREER
+  TRAININGS
+  UNIVERSITY_LIFE
+  SCIENCE
+  SPORTS
+}
+
+model Category {
+  id       String       @id @default(cuid())
+  name     String       @unique
+  type     CategoryType
+  imageUrl String?     // URL изображения категории
+  events   Event[]
+
+  @@map("categories")
+}
+
+model EventRegistration {
+  userId       String
+  eventId      String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade) 
+  registeredAt DateTime @default(now()) @map("registered_at")
+  status       RegistrationStatus @default(REGISTERED)
+
+  @@id([userId, eventId]) // Составной первичный ключ
+  @@map("event_registrations")
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  CANCELLED
+  ATTENDED
+}
+
+model EventFavorite {
+  userId  String
+  eventId String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  addedAt DateTime @default(now()) @map("added_at")
+
+  @@id([userId, eventId])
+  @@map("event_favorites")
+}
