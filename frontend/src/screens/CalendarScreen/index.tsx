@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -30,44 +30,36 @@ const CalendarScreen: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const calendarTheme = {
-    backgroundColor: 'transparent',
+  const calendarTheme = useMemo(() => ({
     calendarBackground: 'transparent',
-    textSectionTitleColor: isDark ? '#F7F7F7' : '#1E1E1F',
-    selectedDayBackgroundColor: getColor('primary'),
-    selectedDayTextColor: getColor('textOnPrimary'),
+    textSectionTitleColor: getColor('text'),
     todayTextColor: getColor('primary'),
-    dayTextColor: isDark ? '#F7F7F7' : '#1E1E1F',
+    dayTextColor: getColor('text'),
     textDisabledColor: isDark ? '#666666' : '#999999',
-    dotColor: getColor('primary'),
-    selectedDotColor: getColor('textOnPrimary'),
-    arrowColor: isDark ? '#F7F7F7' : '#1E1E1F',
-    monthTextColor: isDark ? '#F7F7F7' : '#1E1E1F',
-    indicatorColor: isDark ? '#F7F7F7' : '#1E1E1F',
-    textDayFontSize: 16,
-    textMonthFontSize: 16,
-    textDayHeaderFontSize: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
-  };
+    arrowColor: getColor('text'),
+    monthTextColor: getColor('text'),
+  }), [isDark]);
+
+  const renderCalendar = () => (
+    <Calendar
+      key={`calendar-${isDark}`}
+      onDayPress={handleDayPress}
+      locale="ru"
+      theme={calendarTheme}
+      markedDates={{
+        [selectedDate]: {
+          selected: true,
+          selectedColor: getColor('primary'),
+          selectedTextColor: getColor('textOnPrimary')
+        }
+      }}
+    />
+  );
 
   return (
     <View style={styles.container}>
-      {isCalendarVisible && (
-        <Calendar
-          onDayPress={handleDayPress}
-          locale="ru"
-          theme={calendarTheme}
-          markedDates={{
-            [selectedDate]: {
-              selected: true,
-              selectedColor: getColor('primary'),
-              selectedTextColor: getColor('textOnPrimary')
-            }
-          }}
-        />
-      )}
-      <View style={styles.eventsContainer}>
+      {isCalendarVisible && renderCalendar()}
+      < View style={styles.eventsContainer}>
         <EventsList
           filters={{
             categoryId: ['all'],
@@ -75,7 +67,7 @@ const CalendarScreen: React.FC = () => {
           }}
         />
       </View>
-    </View>
+    </View >
   );
 };
 

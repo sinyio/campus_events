@@ -93,6 +93,12 @@ const TabNavigator = () => {
             }
           }
         },
+        tabBarButton: (props) => {
+          const filteredProps = Object.fromEntries(
+            Object.entries(props).filter(([_, value]) => value !== null)
+          );
+          return <TouchableOpacity {...filteredProps} />;
+        },
         header: () => (
           <View style={[
             dynamicStyles.header,
@@ -151,8 +157,8 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="Афиша" component={FeedScreen} />
       <Tab.Screen name="Поиск" component={SearchScreen} />
-      <Tab.Screen 
-        name="Календарь" 
+      <Tab.Screen
+        name="Календарь"
         component={CalendarScreen}
         initialParams={{ isCalendarVisible: true }}
       />

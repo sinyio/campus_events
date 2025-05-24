@@ -21,5 +21,6 @@ export const useEvents = (filters?: EventFilters) => {
       return Number(lastPage.meta.page) + 1;
     },
     initialPageParam: 1,
+    staleTime: 0,
   });
 }; 
