@@ -238,20 +238,11 @@ export class EventsService {
 
   private calculateEventStatus(startTime: Date, endTime: Date, referenceDate?: Date): EventStatus {
     const now = referenceDate || new Date();
-    // Convert all dates to UTC for comparison
-    const utcNow = new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      now.getUTCHours(),
-      now.getUTCMinutes(),
-      now.getUTCSeconds()
-    ));
-
-    // startTime and endTime are already in UTC from the database
-    if (utcNow < startTime) {
+    
+    // Direct date comparison without manual UTC conversion
+    if (now < startTime) {
       return EventStatus.UPCOMING;
-    } else if (utcNow >= startTime && utcNow <= endTime) {
+    } else if (now >= startTime && now <= endTime) {
       return EventStatus.ONGOING;
     } else {
       return EventStatus.PAST;
